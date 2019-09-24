@@ -1,5 +1,7 @@
 package de.jonas.spring.model;
 
+import org.apache.logging.log4j.util.Strings;
+
 public class MagicOrResonance {
     private final AwokenType awokenType;
     private final int magic;
@@ -39,25 +41,29 @@ public class MagicOrResonance {
         }
 
         if (magicalAbilities != 0) {
-            description += magicalAbilities + " Magische Fähigkeiten auf Level " + magicalAbilityLevels;
+            description += magicalAbilities + " Fähigkeiten Level " + magicalAbilityLevels + ", ";
         }
         if (magicalAbilityGroupLevel != 0) {
-            description += " Eine magische Fertigkeitengruppe Level " + magicalAbilityGroupLevel;
+            description += " Eine Fertigkeitengruppe Level " + magicalAbilityGroupLevel;
         }
         if (spellsRitualsAlchemy != 0) {
-            description += spellsRitualsAlchemy + " Zauber, Rituale und/oder Alchemische Zauber ";
+            description += spellsRitualsAlchemy + " Zauber";
         }
         if (resonance != 0) {
-            description += " Resonanz " + resonance;
+            description += " Resonanz " + resonance + ", ";
         }
         if (resonanceAbilities != 0) {
-            description += resonanceAbilities + " Resonanzfertigkeiten auf Stufe " + resonanceAbilityLevels;
+            description += resonanceAbilities + " Fertigkeiten Stufe " + resonanceAbilityLevels + ", ";
         }
         if (complexForms != 0) {
             description += complexForms + " Komplexe Formen";
         }
         if (actionAbilityLevel != 0) {
-            description += " Eine Aktionsfertigkeit auf Stufe " + actionAbilityLevel;
+            description += " Eine Fertigkeit Stufe " + actionAbilityLevel;
+        }
+
+        if (Strings.isEmpty(description)) {
+            description = "Keine";
         }
 
         return description;

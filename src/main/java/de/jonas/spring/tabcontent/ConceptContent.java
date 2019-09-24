@@ -10,29 +10,24 @@ import de.jonas.spring.model.RunnerLevel;
 
 
 public class ConceptContent extends FormLayout {
-    public ConceptContent(PlayerCharacter playerCharacter) {
-        addNameField(playerCharacter);
-        addExperienceComboBox(playerCharacter);
+    public ConceptContent(Binder<PlayerCharacter> binder) {
+        addNameField(binder);
+        addExperienceComboBox(binder);
     }
 
-    private void addNameField(PlayerCharacter playerCharacter) {
+    private void addNameField(Binder<PlayerCharacter> binder) {
         TextField nameField = new TextField("Name");
-        Binder<PlayerCharacter> binder = new Binder<>();
         binder.bind(nameField, PlayerCharacter::getName, PlayerCharacter::setName);
-        binder.setBean(playerCharacter);
-
         add(nameField);
     }
 
-    private void addExperienceComboBox(PlayerCharacter playerCharacter) {
+    private void addExperienceComboBox(Binder<PlayerCharacter> binder) {
         RadioButtonGroup<RunnerLevel> radioButton = new RadioButtonGroup<>();
         radioButton.setItems(RunnerLevel.values());
         radioButton.setLabel("Erfahrung");
         Label experienceDescription = new Label();
-        radioButton.addValueChangeListener(event -> {
-            playerCharacter.setRunnerLevel(event.getValue());
-        });
-        radioButton.setValue(playerCharacter.getRunnerLevel());
+        radioButton.addValueChangeListener(event -> binder.getBean().setRunnerLevel(event.getValue()));
+        radioButton.setValue(binder.getBean().getRunnerLevel());
 
         add(radioButton);
         add(experienceDescription);

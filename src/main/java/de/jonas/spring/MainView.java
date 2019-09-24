@@ -4,11 +4,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import de.jonas.spring.model.PlayerCharacter;
 import de.jonas.spring.tabcontent.ConceptContent;
-import de.jonas.spring.tabcontent.MetatypeContent;
+import de.jonas.spring.tabcontent.MagicOrResonanceContent;
+import de.jonas.spring.tabcontent.MetaTypeContent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +21,22 @@ public class MainView extends VerticalLayout {
     private Map<Tab, Component> tabContents = new HashMap<>();
 
     public MainView() {
+        setHeightFull();
+
         PlayerCharacter playerCharacter = new PlayerCharacter();
+        Binder<PlayerCharacter> playerBinder = new Binder<>();
+        playerBinder.setBean(playerCharacter);
 
         Tabs tabs = new Tabs();
 
         Tab conceptTab = new Tab("Konzept");
-        tabContents.put(conceptTab, new ConceptContent(playerCharacter));
+        tabContents.put(conceptTab, new ConceptContent(playerBinder));
         Tab metatypeTab = new Tab("Metatyp");
-        tabContents.put(metatypeTab, new MetatypeContent(playerCharacter));
-        Tab tab3 = new Tab("Magie und Resonanz");
+        tabContents.put(metatypeTab, new MetaTypeContent(playerBinder));
+        Tab magicOrResonance = new Tab("Magie und Resonanz");
+        tabContents.put(magicOrResonance, new MagicOrResonanceContent(playerBinder));
 
-        tabs.add(conceptTab, metatypeTab, tab3);
+        tabs.add(conceptTab, metatypeTab, magicOrResonance);
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
 
         tabs.addSelectedChangeListener(event -> {

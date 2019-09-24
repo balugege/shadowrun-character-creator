@@ -1,5 +1,7 @@
 package de.jonas.spring.model;
 
+import org.apache.logging.log4j.util.Strings;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -88,7 +90,12 @@ public enum Priority {
     public MagicOrResonance[] getMagicOrResonances() {
         return magicOrResonances;
     }
-    public String getMagicOrMetatypeDescription() {
-        return Arrays.stream(magicOrResonances).map(MagicOrResonance::toString).collect(Collectors.joining("<br>"));
+    public String getMagicOrResonanceDescription() {
+        String collect = Arrays.stream(magicOrResonances).map(MagicOrResonance::toString).collect(Collectors.joining("<br>"));
+        if(Strings.isEmpty(collect)) {
+            return "Keine";
+        } else {
+            return collect;
+        }
     }
 }
