@@ -14,6 +14,16 @@ public class PlayerCharacter {
      */
     private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
+    public MagicalSkillGroup getMagicalSkillGroup() {
+        return magicalSkillGroup;
+    }
+
+    public void setMagicalSkillGroup(MagicalSkillGroup magicalSkillGroup) {
+        this.magicalSkillGroup = magicalSkillGroup;
+    }
+
+    private MagicalSkillGroup magicalSkillGroup;
+
     public AwokenType getAwokenType() {
         return awokenType;
     }
