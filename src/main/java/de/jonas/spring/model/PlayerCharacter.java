@@ -1,7 +1,13 @@
 package de.jonas.spring.model;
 
+import de.jonas.spring.model.skills.MagicalOrResonanceSkill;
+import de.jonas.spring.model.skills.MagicalSkillGroup;
+
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlayerCharacter {
     private Metatype metatype;
@@ -9,6 +15,19 @@ public class PlayerCharacter {
     private String name;
     private RunnerLevel runnerLevel;
     private Map<Prioritizable, Priority> priorities = new EnumMap<>(Prioritizable.class);
+    private List<MagicalOrResonanceSkill> magicalOrResonanceSkills = new ArrayList<>();
+
+    /**
+     * @return Only castable skills.
+     */
+    public List<MagicalOrResonanceSkill> getMagicalOrResonanceSkills() {
+        return magicalOrResonanceSkills.stream().filter(skill -> (awokenType == AwokenType.TECHNOMANCER) == skill.isResonanceSkill()).collect(Collectors.toList());
+    }
+
+    public List<MagicalOrResonanceSkill> getAllMagicalOrResonanceSkills() {
+        return magicalOrResonanceSkills;
+    }
+
     /**
      * Attributes bought at character creation
      */

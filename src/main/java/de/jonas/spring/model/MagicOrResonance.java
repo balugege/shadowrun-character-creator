@@ -29,6 +29,22 @@ public class MagicOrResonance {
         this.actionAbilityLevel = actionAbilityLevel;
     }
 
+    public int getResonanceAbilities() {
+        return resonanceAbilities;
+    }
+
+    public int getResonanceAbilityLevels() {
+        return resonanceAbilityLevels;
+    }
+
+    public int getMagicalAbilities() {
+        return magicalAbilities;
+    }
+
+    public int getMagicalAbilityLevels() {
+        return magicalAbilityLevels;
+    }
+
     public AwokenType getAwokenType() {
         return awokenType;
     }

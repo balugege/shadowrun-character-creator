@@ -33,7 +33,7 @@ public class MainView extends VerticalLayout {
         tabContents.put(conceptTab, new ConceptContent(playerBinder));
         Tab metatypeTab = new Tab("Metatyp");
         tabContents.put(metatypeTab, new MetaTypeContent(playerBinder));
-        Tab magicOrResonance = new Tab("Magie und Resonanz");
+        Tab magicOrResonance = new Tab("Magie oder Resonanz");
         tabContents.put(magicOrResonance, new MagicOrResonanceContent(playerBinder));
 
         tabs.add(conceptTab, metatypeTab, magicOrResonance);

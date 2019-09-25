@@ -156,8 +156,7 @@ public class MetaTypeContent extends VerticalLayout {
                             });
                 }
 
-                int spendablePoints = player.getPriority(Prioritizable.ATTRIBUTES).getAttributePoints() - player.getBoughtAttributes().getSumOfBuyable();
-                setInvalid(getValue() > attributeStart + spendablePoints);
+                setInvalid(player.getBoughtAttributes().getSumOfBuyable() > player.getPriority(Prioritizable.ATTRIBUTES).getAttributePoints());
             }
         }
     }

@@ -90,6 +90,10 @@ public enum Priority {
     public MagicOrResonance[] getMagicOrResonances() {
         return magicOrResonances;
     }
+
+    public MagicOrResonance getMagicOrResonance(AwokenType awokenType) {
+        return Arrays.stream(magicOrResonances).filter(magicOrResonance -> magicOrResonance.getAwokenType() == awokenType).findAny().orElse(null);
+    }
     public String getMagicOrResonanceDescription() {
         String collect = Arrays.stream(magicOrResonances).map(MagicOrResonance::toString).collect(Collectors.joining("<br>"));
         if(Strings.isEmpty(collect)) {
