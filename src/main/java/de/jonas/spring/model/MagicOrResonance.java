@@ -29,6 +29,14 @@ public class MagicOrResonance {
         this.actionAbilityLevel = actionAbilityLevel;
     }
 
+    public int getSpellsRitualsAlchemy() {
+        return spellsRitualsAlchemy;
+    }
+
+    public int getComplexForms() {
+        return complexForms;
+    }
+
     public int getResonanceAbilities() {
         return resonanceAbilities;
     }

@@ -16,12 +16,21 @@ public class PlayerCharacter {
     private RunnerLevel runnerLevel;
     private Map<Prioritizable, Priority> priorities = new EnumMap<>(Prioritizable.class);
     private List<MagicalOrResonanceSkill> magicalOrResonanceSkills = new ArrayList<>();
+    private List<Castable> castables = new ArrayList<>();
+
+    public List<Castable> getCastables() {
+        return castables.stream().filter(castable -> castable.canPlayerLearn(this)).collect(Collectors.toList());
+    }
+
+    public List<Castable> getAllCastables() {
+        return castables;
+    }
 
     /**
      * @return Only castable skills.
      */
     public List<MagicalOrResonanceSkill> getMagicalOrResonanceSkills() {
-        return magicalOrResonanceSkills.stream().filter(skill -> (awokenType == AwokenType.TECHNOMANCER) == skill.isResonanceSkill()).collect(Collectors.toList());
+        return magicalOrResonanceSkills.stream().filter(skill -> skill.canPlayerLearn(this)).collect(Collectors.toList());
     }
 
     public List<MagicalOrResonanceSkill> getAllMagicalOrResonanceSkills() {

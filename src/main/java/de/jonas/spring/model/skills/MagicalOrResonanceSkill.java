@@ -1,5 +1,8 @@
 package de.jonas.spring.model.skills;
 
+import de.jonas.spring.model.AwokenType;
+import de.jonas.spring.model.PlayerCharacter;
+
 public enum MagicalOrResonanceSkill {
     ALCHEMY("Alchemie", false),
     ANTIMAGIC("Antimagie", false),
@@ -8,7 +11,7 @@ public enum MagicalOrResonanceSkill {
     CRATE_FOCUS("Fokusherstellung", false),
     SUMMON("Herbeirufen", false),
     RITUAL("Ritaulzauberei", false),
-    DEMANDING("Sprichzauberei", false),
+    DEMANDING("Spruchzauberei", false),
     BANNING("Verbannen", false),
     DECOMPILING("Dekompilieren", true),
     COMPILING("Kompilieren", true),
@@ -29,5 +32,12 @@ public enum MagicalOrResonanceSkill {
     @Override
     public String toString() {
         return label;
+    }
+
+    public boolean canPlayerLearn(PlayerCharacter player) {
+        if (player.getAwokenType() == null) {
+            return false;
+        }
+        return (player.getAwokenType() == AwokenType.TECHNOMANCER) == isResonanceSkill();
     }
 }

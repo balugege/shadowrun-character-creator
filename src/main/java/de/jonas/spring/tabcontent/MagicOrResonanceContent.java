@@ -20,6 +20,8 @@ public class MagicOrResonanceContent extends VerticalLayout {
     private Label noMagicOrResonanceHint = new Label("Dein Charakter kann keine Magie oder Resonanz.");
     private ComboBox<MagicalSkillGroup> magicalSkillGroupComboBox;
     private ComboBox<MagicalOrResonanceSkill> skillComboBox;
+    private Grid<Castable> castableGrid;
+    private ComboBox<Castable> castableComboBox;
 
     public MagicOrResonanceContent(Binder<PlayerCharacter> binder) {
         build(binder);
@@ -38,9 +40,17 @@ public class MagicOrResonanceContent extends VerticalLayout {
         magicalSkillGrid.setItems(binder.getBean().getMagicalOrResonanceSkills());
 
         skillComboBox.setVisible(awokenType != null && awokenType != AwokenType.ASPECT_WIZARD);
-        skillComboBox.setEnabled(canAddMoreSkills(binder));
-        skillComboBox.setItems(EnumSet.allOf(MagicalOrResonanceSkill.class).stream().filter(skill -> (awokenType == AwokenType.TECHNOMANCER) == skill.isResonanceSkill()));
-        skillComboBox.setLabel(awokenType == AwokenType.TECHNOMANCER ? "Resonanzfähigkeiten" : "Magische Fähigkeiten");
+        skillComboBox.setEnabled(canLearnMoreSkills(binder));
+        skillComboBox.setItems(EnumSet.allOf(MagicalOrResonanceSkill.class).stream().filter(skill -> skill.canPlayerLearn(binder.getBean())));
+        skillComboBox.setLabel(awokenType == AwokenType.TECHNOMANCER ? "Resonanzfähigkeiten (S. 143)" : "Magische Fähigkeiten (S. 142)");
+
+        castableGrid.setVisible(awokenType != null);
+        castableGrid.setItems(binder.getBean().getCastables());
+
+        castableComboBox.setVisible(awokenType != null);
+        castableComboBox.setEnabled(canLearnMoreCastables(binder));
+        castableComboBox.setItems(EnumSet.allOf(Castable.class).stream().filter(castable -> castable.canPlayerLearn(binder.getBean())));
+        castableComboBox.setLabel(awokenType == AwokenType.TECHNOMANCER ? "Komplexe Formen (S. 250)" : "Zauber, Rituale, Alchemische Zauber (S. 280)");
     }
 
     private void build(Binder<PlayerCharacter> binder) {
@@ -53,11 +63,13 @@ public class MagicOrResonanceContent extends VerticalLayout {
         add(magicalSkillGroupComboBox);
 
         addMagicalSkillSelector(binder);
+        addCastableSelector(binder);
     }
 
     private <E extends Enum<E>> void addMagicalSkillSelector(Binder<PlayerCharacter> binder) {
         magicalSkillGrid = new Grid<>();
         skillComboBox = new ComboBox<>();
+        skillComboBox.setWidth("40%");
 
         magicalSkillGrid.setSelectionMode(Grid.SelectionMode.NONE);
         magicalSkillGrid.addColumn(MagicalOrResonanceSkill::toString).setHeader("Fähigkeit");
@@ -76,7 +88,7 @@ public class MagicOrResonanceContent extends VerticalLayout {
                 List<MagicalOrResonanceSkill> magicalSkills = binder.getBean().getMagicalOrResonanceSkills();
                 magicalSkillGrid.setItems(magicalSkills);
                 skillComboBox.setItems(EnumSet.allOf(MagicalOrResonanceSkill.class).stream().filter(magicalSkills::contains).collect(Collectors.toList()));
-                skillComboBox.setEnabled(canAddMoreSkills(binder));
+                skillComboBox.setEnabled(canLearnMoreSkills(binder));
             });
             return removeButton;
         });
@@ -84,10 +96,10 @@ public class MagicOrResonanceContent extends VerticalLayout {
         skillComboBox.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 binder.getBean().getAllMagicalOrResonanceSkills().add(event.getValue());
-                List<MagicalOrResonanceSkill> skills = binder.getBean().getMagicalOrResonanceSkills();
-                magicalSkillGrid.setItems(skills);
-                skillComboBox.setItems(EnumSet.allOf(MagicalOrResonanceSkill.class).stream().filter(skill -> (binder.getBean().getAwokenType() == AwokenType.TECHNOMANCER) == skill.isResonanceSkill()).filter(element -> !skills.contains(element)));
-                skillComboBox.setEnabled(canAddMoreSkills(binder));
+                List<MagicalOrResonanceSkill> learnedSkills = binder.getBean().getMagicalOrResonanceSkills();
+                magicalSkillGrid.setItems(learnedSkills);
+                skillComboBox.setItems(EnumSet.allOf(MagicalOrResonanceSkill.class).stream().filter(skill -> skill.canPlayerLearn(binder.getBean())).filter(element -> !learnedSkills.contains(element)));
+                skillComboBox.setEnabled(canLearnMoreSkills(binder));
             }
         });
 
@@ -95,7 +107,44 @@ public class MagicOrResonanceContent extends VerticalLayout {
         add(magicalSkillGrid);
     }
 
-    private boolean canAddMoreSkills(Binder<PlayerCharacter> binder) {
+    private <E extends Enum<E>> void addCastableSelector(Binder<PlayerCharacter> binder) {
+        castableGrid = new Grid<>();
+        castableComboBox = new ComboBox<>();
+        castableComboBox.setWidth("40%");
+
+        castableGrid.setSelectionMode(Grid.SelectionMode.NONE);
+        castableGrid.addColumn(Castable::toString).setHeader("Zauber, Ritual, Alchemischer Zauber, Komplexe Form");
+        castableGrid.addComponentColumn(castable -> {
+            Button removeButton = new Button("Entfernen");
+            removeButton.addClickListener(event -> {
+                binder.getBean().getAllCastables().remove(castable);
+                List<Castable> learnedCastables = binder.getBean().getCastables();
+                castableGrid.setItems(learnedCastables);
+                castableComboBox.setItems(EnumSet.allOf(Castable.class).stream().filter(castable1 -> castable1.canPlayerLearn(binder.getBean())).filter(element -> !learnedCastables.contains(element)).collect(Collectors.toList()));
+                castableComboBox.setEnabled(canLearnMoreCastables(binder));
+            });
+            return removeButton;
+        });
+
+        castableComboBox.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                binder.getBean().getAllCastables().add(event.getValue());
+                List<Castable> learnedCastables = binder.getBean().getCastables();
+                castableGrid.setItems(learnedCastables);
+                castableComboBox.setItems(EnumSet.allOf(Castable.class).stream().filter(castable1 -> castable1.canPlayerLearn(binder.getBean())).filter(element -> !learnedCastables.contains(element)).collect(Collectors.toList()));
+                castableComboBox.setEnabled(canLearnMoreCastables(binder));
+            }
+        });
+
+        add(castableComboBox);
+        add(castableGrid);
+    }
+
+    private boolean canLearnMoreSkills(Binder<PlayerCharacter> binder) {
+        if (binder.getBean().getAwokenType() == null) {
+            return false;
+        }
+
         Priority priority = binder.getBean().getPriority(Prioritizable.MAGIC_OR_RESONANZ);
         if (priority == null) {
             return false;
@@ -106,6 +155,24 @@ public class MagicOrResonanceContent extends VerticalLayout {
             return selectedSkills < magicOrResonance.getResonanceAbilities();
         } else {
             return selectedSkills < magicOrResonance.getMagicalAbilities();
+        }
+    }
+
+    private boolean canLearnMoreCastables(Binder<PlayerCharacter> binder) {
+        if (binder.getBean().getAwokenType() == null) {
+            return false;
+        }
+
+        Priority priority = binder.getBean().getPriority(Prioritizable.MAGIC_OR_RESONANZ);
+        if (priority == null) {
+            return false;
+        }
+        int selectedCastables = binder.getBean().getCastables().size();
+        MagicOrResonance magicOrResonance = priority.getMagicOrResonance(binder.getBean().getAwokenType());
+        if (binder.getBean().getAwokenType() == AwokenType.TECHNOMANCER) {
+            return selectedCastables < magicOrResonance.getComplexForms();
+        } else {
+            return selectedCastables < magicOrResonance.getSpellsRitualsAlchemy();
         }
     }
 }
