@@ -3,7 +3,7 @@ package de.jonas.spring.model.skills;
 import de.jonas.spring.model.AwokenType;
 import de.jonas.spring.model.PlayerCharacter;
 
-public enum MagicalOrResonanceSkill {
+public enum MagicalOrResonanceSkill implements Skill {
     ALCHEMY("Alchemie", false),
     ANTIMAGIC("Antimagie", false),
     BINDING("Binden", false),

@@ -1,12 +1,10 @@
 package de.jonas.spring.model;
 
+import de.jonas.spring.model.skills.Skill;
 import de.jonas.spring.model.skills.MagicalOrResonanceSkill;
 import de.jonas.spring.model.skills.MagicalSkillGroup;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerCharacter {
@@ -15,7 +13,7 @@ public class PlayerCharacter {
     private String name;
     private RunnerLevel runnerLevel;
     private Map<Prioritizable, Priority> priorities = new EnumMap<>(Prioritizable.class);
-    private List<MagicalOrResonanceSkill> magicalOrResonanceSkills = new ArrayList<>();
+    private Map<Skill, Integer> learnedSkills = new HashMap<>();
     private List<Castable> castables = new ArrayList<>();
 
     public List<Castable> getCastables() {
@@ -27,14 +25,10 @@ public class PlayerCharacter {
     }
 
     /**
-     * @return Only castable skills.
+     * @return Only skills that the player can cast.
      */
     public List<MagicalOrResonanceSkill> getMagicalOrResonanceSkills() {
-        return magicalOrResonanceSkills.stream().filter(skill -> skill.canPlayerLearn(this)).collect(Collectors.toList());
-    }
-
-    public List<MagicalOrResonanceSkill> getAllMagicalOrResonanceSkills() {
-        return magicalOrResonanceSkills;
+        return (List) learnedSkills.keySet().stream().filter(skill -> skill instanceof MagicalOrResonanceSkill && ((MagicalOrResonanceSkill) skill).canPlayerLearn(this)).collect(Collectors.toList());
     }
 
     /**
@@ -43,14 +37,16 @@ public class PlayerCharacter {
     private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     public MagicalSkillGroup getMagicalSkillGroup() {
-        return magicalSkillGroup;
+        return (MagicalSkillGroup) learnedSkills.keySet().stream().filter(skill -> skill instanceof MagicalSkillGroup).findAny().orElse(null);
     }
 
-    public void setMagicalSkillGroup(MagicalSkillGroup magicalSkillGroup) {
-        this.magicalSkillGroup = magicalSkillGroup;
+    public void forgetSkill(Skill skill) {
+        learnedSkills.remove(skill);
     }
 
-    private MagicalSkillGroup magicalSkillGroup;
+    public void learnSkill(Skill skill, int level) {
+        learnedSkills.put(skill, level);
+    }
 
     public AwokenType getAwokenType() {
         return awokenType;
