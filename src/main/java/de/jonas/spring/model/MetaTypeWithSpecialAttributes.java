@@ -1,11 +1,11 @@
 package de.jonas.spring.model;
 
-public final class MetatypeWithSpecialAttributes {
+public final class MetaTypeWithSpecialAttributes {
 
     private final Metatype metatype;
     private final int specialAttributePoints;
 
-    MetatypeWithSpecialAttributes(Metatype metatype, int specialAttributePoints) {
+    MetaTypeWithSpecialAttributes(Metatype metatype, int specialAttributePoints) {
         this.metatype = metatype;
         this.specialAttributePoints = specialAttributePoints;
     }

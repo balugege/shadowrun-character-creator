@@ -24,6 +24,8 @@ public class MagicOrResonanceContent extends VerticalLayout {
     private ComboBox<Castable> castableComboBox;
 
     public MagicOrResonanceContent(Binder<PlayerCharacter> binder) {
+        setPadding(false);
+
         build(binder);
         updateVisibility(binder);
         binder.addValueChangeListener(event -> updateVisibility(binder));
@@ -66,7 +68,7 @@ public class MagicOrResonanceContent extends VerticalLayout {
         addCastableSelector(binder);
     }
 
-    private <E extends Enum<E>> void addMagicalSkillSelector(Binder<PlayerCharacter> binder) {
+    private void addMagicalSkillSelector(Binder<PlayerCharacter> binder) {
         magicalSkillGrid = new Grid<>();
         skillComboBox = new ComboBox<>();
         skillComboBox.setWidth("40%");
@@ -107,7 +109,7 @@ public class MagicOrResonanceContent extends VerticalLayout {
         add(magicalSkillGrid);
     }
 
-    private <E extends Enum<E>> void addCastableSelector(Binder<PlayerCharacter> binder) {
+    private void addCastableSelector(Binder<PlayerCharacter> binder) {
         castableGrid = new Grid<>();
         castableComboBox = new ComboBox<>();
         castableComboBox.setWidth("40%");

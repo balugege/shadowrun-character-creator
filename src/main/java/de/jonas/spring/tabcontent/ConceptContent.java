@@ -16,20 +16,17 @@ public class ConceptContent extends FormLayout {
     }
 
     private void addNameField(Binder<PlayerCharacter> binder) {
-        TextField nameField = new TextField("Name");
+        TextField nameField = new TextField();
         binder.bind(nameField, PlayerCharacter::getName, PlayerCharacter::setName);
-        add(nameField);
+        addFormItem(nameField, "Name");
     }
 
     private void addExperienceComboBox(Binder<PlayerCharacter> binder) {
         RadioButtonGroup<RunnerLevel> radioButton = new RadioButtonGroup<>();
         radioButton.setItems(RunnerLevel.values());
-        radioButton.setLabel("Erfahrung");
-        Label experienceDescription = new Label();
         radioButton.addValueChangeListener(event -> binder.getBean().setRunnerLevel(event.getValue()));
         radioButton.setValue(binder.getBean().getRunnerLevel());
 
-        add(radioButton);
-        add(experienceDescription);
+        addFormItem(radioButton, "Erfahrung");
     }
 }

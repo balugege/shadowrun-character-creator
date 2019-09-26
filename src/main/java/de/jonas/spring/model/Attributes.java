@@ -11,8 +11,9 @@ public class Attributes {
     private int charisma;
     private int edge;
     private int essence;
+    private int magicOrResonance;
 
-    public Attributes(int constitution, int agility, int reactivity, int strength, int willpower, int logic, int intelligence, int charisma, int edge, int essence) {
+    Attributes(int constitution, int agility, int reactivity, int strength, int willpower, int logic, int intelligence, int charisma, int edge, int essence, int magicOrResonance) {
         this.constitution = constitution;
         this.agility = agility;
         this.reactivity = reactivity;
@@ -23,6 +24,7 @@ public class Attributes {
         this.charisma = charisma;
         this.edge = edge;
         this.essence = essence;
+        this.magicOrResonance = magicOrResonance;
     }
 
     public void setConstitution(int constitution) {
@@ -89,6 +91,14 @@ public class Attributes {
         return edge;
     }
 
+    public int getMagicOrResonance() {
+        return magicOrResonance;
+    }
+
+    public void setMagicOrResonance(int magicOrResonance) {
+        this.magicOrResonance = magicOrResonance;
+    }
+
     public void setEdge(int edge) {
         this.edge = edge;
     }
@@ -97,7 +107,46 @@ public class Attributes {
         return constitution;
     }
 
-    public int getSumOfBuyable() {
-        return this.constitution + this.agility + this.reactivity + this.strength + this.willpower + this.logic + this.intelligence + this.charisma + this.edge;
+    public int getSumOfNonSpecialAttributes() {
+        return this.constitution +
+                this.agility +
+                this.reactivity +
+                this.strength +
+                this.willpower +
+                this.logic +
+                this.intelligence +
+                this.charisma;
+    }
+
+    public int getSumOfSpecialAttributes() {
+        return this.magicOrResonance +
+                this.edge;
+    }
+
+    public boolean anyNonSpecialAttributeAtOrAbove(Attributes attributeLimits) {
+        return (this.constitution >= attributeLimits.constitution) ||
+                (this.agility >= attributeLimits.constitution) ||
+                (this.reactivity >= attributeLimits.constitution) ||
+                (this.strength >= attributeLimits.constitution) ||
+                (this.willpower >= attributeLimits.constitution) ||
+                (this.logic >= attributeLimits.constitution) ||
+                (this.intelligence >= attributeLimits.constitution) ||
+                (this.charisma >= attributeLimits.constitution);
+    }
+
+    public Attributes getSumWith(Attributes addend) {
+        return new Attributes(
+                this.constitution + addend.constitution,
+                this.agility + addend.agility,
+                this.reactivity + addend.reactivity,
+                this.strength + addend.strength,
+                this.willpower + addend.willpower,
+                this.logic + addend.logic,
+                this.intelligence + addend.intelligence,
+                this.charisma + addend.charisma,
+                this.edge + addend.edge,
+                this.essence + addend.essence,
+                this.magicOrResonance + addend.magicOrResonance
+        );
     }
 }

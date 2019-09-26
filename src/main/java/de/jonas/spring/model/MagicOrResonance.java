@@ -4,25 +4,25 @@ import org.apache.logging.log4j.util.Strings;
 
 public class MagicOrResonance {
     private final AwokenType awokenType;
-    private final int magic;
+    private final int magicAttributeLevel;
     private final int magicalAbilities;
     private final int magicalAbilityGroupLevel;
     private final int magicalAbilityLevels;
     private final int spellsRitualsAlchemy;
-    private final int resonance;
+    private final int resonanceAttributeLevel;
     private final int resonanceAbilities;
     private final int resonanceAbilityLevels;
     private final int complexForms;
     private final int actionAbilityLevel;
 
-    public MagicOrResonance(AwokenType awokenType, int magic, int magicalAbilities, int magicalAbilityGroupLevel, int magicalAbilityLevels, int spellsRitualsAlchemy, int resonance, int resonanceAbilities, int resonanceAbilityLevels, int complexForms, int actionAbilityLevel) {
+    public MagicOrResonance(AwokenType awokenType, int magicAttributeLevel, int magicalAbilities, int magicalAbilityGroupLevel, int magicalAbilityLevels, int spellsRitualsAlchemy, int resonanceAttributeLevel, int resonanceAbilities, int resonanceAbilityLevels, int complexForms, int actionAbilityLevel) {
         this.awokenType = awokenType;
-        this.magic = magic;
+        this.magicAttributeLevel = magicAttributeLevel;
         this.magicalAbilities = magicalAbilities;
         this.magicalAbilityLevels = magicalAbilityLevels;
         this.magicalAbilityGroupLevel = magicalAbilityGroupLevel;
         this.spellsRitualsAlchemy = spellsRitualsAlchemy;
-        this.resonance = resonance;
+        this.resonanceAttributeLevel = resonanceAttributeLevel;
         this.resonanceAbilities = resonanceAbilities;
         this.resonanceAbilityLevels = resonanceAbilityLevels;
         this.complexForms = complexForms;
@@ -53,6 +53,14 @@ public class MagicOrResonance {
         return magicalAbilityLevels;
     }
 
+    public int getResonanceAttributeLevel() {
+        return resonanceAttributeLevel;
+    }
+
+    public int getMagicAttributeLevel() {
+        return magicAttributeLevel;
+    }
+
     public AwokenType getAwokenType() {
         return awokenType;
     }
@@ -60,8 +68,8 @@ public class MagicOrResonance {
     @Override
     public String toString() {
         String description = "<b>" + awokenType.toString() + "</b>:";
-        if (magic != 0) {
-            description += " Magie " + magic + ", ";
+        if (magicAttributeLevel != 0) {
+            description += " Magie " + magicAttributeLevel + ", ";
         }
 
         if (magicalAbilities != 0) {
@@ -73,8 +81,8 @@ public class MagicOrResonance {
         if (spellsRitualsAlchemy != 0) {
             description += spellsRitualsAlchemy + " Zauber";
         }
-        if (resonance != 0) {
-            description += " Resonanz " + resonance + ", ";
+        if (resonanceAttributeLevel != 0) {
+            description += " Resonanz " + resonanceAttributeLevel + ", ";
         }
         if (resonanceAbilities != 0) {
             description += resonanceAbilities + " Fertigkeiten Stufe " + resonanceAbilityLevels + ", ";

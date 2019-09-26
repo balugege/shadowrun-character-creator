@@ -40,7 +40,7 @@ public class PlayerCharacter {
     /**
      * Attributes bought at character creation
      */
-    private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     public MagicalSkillGroup getMagicalSkillGroup() {
         return magicalSkillGroup;

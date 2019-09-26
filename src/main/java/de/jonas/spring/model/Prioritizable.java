@@ -1,8 +1,8 @@
 package de.jonas.spring.model;
 
 public enum Prioritizable {
-    METATYPE("Metatyp"),
-    ATTRIBUTES("Attribute"),
+    METATYPE("Metatyp (Spezialattributspunkte)"),
+    ATTRIBUTES("Attributspunkte"),
     MAGIC_OR_RESONANZ("Magie oder Resonanz"),
     ABILITY_POINTS("Fertigkeiten"),
     RESOURCES("Ressourcen");

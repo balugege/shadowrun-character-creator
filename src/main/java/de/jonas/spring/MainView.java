@@ -22,6 +22,8 @@ public class MainView extends VerticalLayout {
 
     public MainView() {
         setHeightFull();
+        setSpacing(false);
+        setMargin(false);
 
         PlayerCharacter playerCharacter = new PlayerCharacter();
         Binder<PlayerCharacter> playerBinder = new Binder<>();
