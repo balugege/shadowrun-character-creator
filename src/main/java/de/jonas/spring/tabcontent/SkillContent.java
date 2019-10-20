@@ -4,11 +4,16 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import de.jonas.spring.model.*;
-import de.jonas.spring.model.skills.*;
+import de.jonas.spring.model.PlayerCharacter;
+import de.jonas.spring.model.Prioritizable;
+import de.jonas.spring.model.Priority;
+import de.jonas.spring.model.skills.KnowledgeSkill;
+import de.jonas.spring.model.skills.PhysicalSkill;
+import de.jonas.spring.model.skills.Skill;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -20,6 +25,7 @@ public class SkillContent extends VerticalLayout {
     private ComboBox<PhysicalSkill> physicalSkillComboBox;
     private Grid<KnowledgeSkill> knowledgeSkillGrid;
     private TextField knowledgeSkillTextField;
+    private Label noAbilitiesHint = new Label("Dein Charakter hat seine Fertigkeitspunkte noch nicht prioritisiert.");
 
     public SkillContent(Binder<PlayerCharacter> binder) {
         setPadding(false);
@@ -31,6 +37,8 @@ public class SkillContent extends VerticalLayout {
 
     private void updateVisibility(Binder<PlayerCharacter> binder) {
         Priority priority = binder.getBean().getPriority(Prioritizable.ABILITY_POINTS);
+        noAbilitiesHint.setVisible(priority == null);
+
         physicalSkillGrid.setVisible(priority != null);
         physicalSkillGrid.setItems(binder.getBean().getPhysicalSkills());
 
@@ -46,6 +54,7 @@ public class SkillContent extends VerticalLayout {
     }
 
     private void build(Binder<PlayerCharacter> binder) {
+        add(noAbilitiesHint);
         addPhysicalSkillSelector(binder);
         addKnowledgeSkillSelector(binder);
     }
@@ -61,10 +70,8 @@ public class SkillContent extends VerticalLayout {
         physicalSkillGrid.addComponentColumn(skill -> {
             ComboBox<Integer> comboBox = new ComboBox<>();
             comboBox.setItems(binder.getBean().getSkillLevel(skill));
-            binder.bind(comboBox, player -> {
-                return player.getSkillLevel(skill);
-            }, (player, value) -> {
-                player.learnSkill(skill, value);
+            binder.bind(comboBox, player -> player.getSkillLevel(skill), (player, value) -> {
+                player.learnSkill(skill, value != null ? value : 1);
             });
             comboBox.setItems(Collections.singletonList(-1));
             comboBox.setValue(-1);
@@ -84,7 +91,7 @@ public class SkillContent extends VerticalLayout {
 
         physicalSkillComboBox.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                binder.getBean().learnSkill(event.getValue(), -1);
+                binder.getBean().learnSkill(event.getValue(), 1);
                 List<PhysicalSkill> learnedSkills = binder.getBean().getPhysicalSkills();
                 physicalSkillGrid.setItems(learnedSkills);
                 physicalSkillComboBox.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !learnedSkills.contains(element)));
@@ -103,7 +110,17 @@ public class SkillContent extends VerticalLayout {
         knowledgeSkillTextField.setLabel("Wissensfertigkeiten (S. 148)");
 
         knowledgeSkillGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        knowledgeSkillGrid.addColumn(Skill::toString).setHeader("Zauber, Ritual, Alchemischer Zauber, Komplexe Form");
+        knowledgeSkillGrid.addColumn(Skill::toString).setHeader("Wissensfertigkeit");
+        physicalSkillGrid.addComponentColumn(skill -> {
+            ComboBox<Integer> comboBox = new ComboBox<>();
+            comboBox.setItems(binder.getBean().getSkillLevel(skill));
+            binder.bind(comboBox, player -> player.getSkillLevel(skill), (player, value) -> {
+                player.learnSkill(skill, value != null ? value : 1);
+            });
+            comboBox.setItems(Collections.singletonList(-1));
+            comboBox.setValue(-1);
+            return comboBox;
+        }).setHeader("Stufe");
         knowledgeSkillGrid.addComponentColumn(skill -> {
             Button removeButton = new Button("Entfernen");
             removeButton.addClickListener(event -> {
@@ -128,11 +145,7 @@ public class SkillContent extends VerticalLayout {
         add(knowledgeSkillGrid);
     }
 
-   private boolean canLearnMoreKnowledgeSkills(Binder<PlayerCharacter> binder) {
-        if (binder.getBean().getAwokenType() == null) {
-            return false;
-        }
-
+    private boolean canLearnMoreKnowledgeSkills(Binder<PlayerCharacter> binder) {
         Priority priority = binder.getBean().getPriority(Prioritizable.ABILITY_POINTS);
         if (priority == null) {
             return false;
@@ -142,10 +155,6 @@ public class SkillContent extends VerticalLayout {
     }
 
     private boolean canLearnMorePhysicalSkills(Binder<PlayerCharacter> binder) {
-        if (binder.getBean().getAwokenType() == null) {
-            return false;
-        }
-
         Priority priority = binder.getBean().getPriority(Prioritizable.ABILITY_POINTS);
         if (priority == null) {
             return false;

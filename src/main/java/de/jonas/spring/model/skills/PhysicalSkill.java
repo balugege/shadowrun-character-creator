@@ -5,7 +5,7 @@ import de.jonas.spring.model.PlayerCharacter;
 
 public enum PhysicalSkill implements Skill {
     ACROBATICS("Akrobatik"),
-    RUNNING("Laufe"),
+    RUNNING("Laufen"),
     SWIMMING("Schwimmen"),
     BIOTECHNOLOGY("Biotechnologie"),
     FIRST_AID("Erste Hilfe"),

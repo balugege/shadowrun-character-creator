@@ -384,32 +384,8 @@ public class MetaTypeContent extends VerticalLayout {
                 updatePriorityDependantComponents(binder);
             });
 
-            /*
-            checkbox.addValueChangeListener(event -> {
-                if (checkboxesByPrioritizable.get(prioritizable) != null && checkboxesByPrioritizable.get(prioritizable).stream().noneMatch(AbstractField::getValue)) {
-                    binder.getBean().setPriority(prioritizable, null);
-                }
-
-                if (event.getValue()) {
-                    binder.getBean().setPriority(prioritizable, priority);
-                    checkboxByPriority.get(priority).forEach(priorityCheckbox -> {
-                        if (priorityCheckbox != checkbox) {
-                            priorityCheckbox.setValue(false);
-                        }
-                    });
-
-                    checkboxesByPrioritizable.get(prioritizable).forEach(prioritizableCheckbox -> {
-                        if (prioritizableCheckbox != checkbox) {
-                            prioritizableCheckbox.setValue(false);
-                        }
-                    });
-                }
-            });
-             */
-
             add(checkbox);
-            Html label = new Html("<span>" + labelText + "</span>");
-            add(label);
+            add(new Html("<span>" + labelText + "</span>"));
         }
     }
 }
