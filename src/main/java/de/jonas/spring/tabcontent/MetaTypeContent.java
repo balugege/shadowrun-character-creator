@@ -1,6 +1,5 @@
 package de.jonas.spring.tabcontent;
 
-import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -35,7 +34,7 @@ public class MetaTypeContent extends VerticalLayout {
     public MetaTypeContent(Binder<PlayerCharacter> binder) {
         setPadding(false);
 
-        addPriorityGrid(binder.getBean());
+        addPriorityGrid(binder);
 
         addMetaTypeComboBox(binder);
 
@@ -45,7 +44,7 @@ public class MetaTypeContent extends VerticalLayout {
 
         addAttributeForm(binder);
 
-        updatePriorityDependantComponents(binder.getBean());
+        updatePriorityDependantComponents(binder);
     }
 
     private void addMetaTypeComboBox(Binder<PlayerCharacter> playerBinder) {
@@ -293,7 +292,9 @@ public class MetaTypeContent extends VerticalLayout {
         }
     }
 
-    private void updatePriorityDependantComponents(PlayerCharacter playerCharacter) {
+    private void updatePriorityDependantComponents(Binder<PlayerCharacter> binder) {
+        PlayerCharacter playerCharacter = binder.getBean();
+
         Priority metaTypePriority = playerCharacter.getPriority(Prioritizable.METATYPE);
         if (metaTypePriority != null) {
             if (oldMetatypePriority == null || metaTypePriority != oldMetatypePriority) {
@@ -334,7 +335,7 @@ public class MetaTypeContent extends VerticalLayout {
     }
 
 
-    private void addPriorityGrid(PlayerCharacter playerCharacter) {
+    private void addPriorityGrid(Binder<PlayerCharacter> binder) {
         add(new Label("Prioritäten"));
 
         Grid<Priority> priorityGrid = new Grid<>();
@@ -344,26 +345,26 @@ public class MetaTypeContent extends VerticalLayout {
         priorityGrid.setSelectionMode(Grid.SelectionMode.NONE);
 
         priorityGrid.addComponentColumn(priority ->
-                new PriorityCheckbox(priority.getMetatypesDescription(), playerCharacter, priority, Prioritizable.METATYPE)
+                new PriorityCheckbox(priority.getMetatypesDescription(), binder, priority, Prioritizable.METATYPE)
         ).setHeader(Prioritizable.METATYPE.getLabel()).setFlexGrow(1);
         priorityGrid.addComponentColumn(priority ->
-                new PriorityCheckbox(String.valueOf(priority.getAttributePoints()), playerCharacter, priority, Prioritizable.ATTRIBUTES)
+                new PriorityCheckbox(String.valueOf(priority.getAttributePoints()), binder, priority, Prioritizable.ATTRIBUTES)
         ).setHeader(Prioritizable.ATTRIBUTES.getLabel()).setFlexGrow(0);
         priorityGrid.addComponentColumn(priority ->
-                new PriorityCheckbox(priority.getMagicOrResonanceDescription(), playerCharacter, priority, Prioritizable.MAGIC_OR_RESONANZ)
+                new PriorityCheckbox(priority.getMagicOrResonanceDescription(), binder, priority, Prioritizable.MAGIC_OR_RESONANZ)
         ).setHeader(Prioritizable.MAGIC_OR_RESONANZ.getLabel()).setFlexGrow(10);
         priorityGrid.addComponentColumn(priority ->
-                new PriorityCheckbox(priority.getStartingAbilityPoints().toString(), playerCharacter, priority, Prioritizable.ABILITY_POINTS)
+                new PriorityCheckbox(priority.getStartingAbilityPoints().toString(), binder, priority, Prioritizable.ABILITY_POINTS)
         ).setHeader(Prioritizable.ABILITY_POINTS.getLabel()).setFlexGrow(3);
         priorityGrid.addComponentColumn(priority ->
-                new PriorityCheckbox(priority.getResources() + " $", playerCharacter, priority, Prioritizable.RESOURCES)
+                new PriorityCheckbox(priority.getResources() + " $", binder, priority, Prioritizable.RESOURCES)
         ).setHeader(Prioritizable.RESOURCES.getLabel()).setFlexGrow(1);
 
         add(priorityGrid);
     }
 
     private class PriorityCheckbox extends HorizontalLayout {
-        PriorityCheckbox(String labelText, PlayerCharacter playerCharacter, Priority priority, Prioritizable prioritizable) {
+        PriorityCheckbox(String labelText, Binder<PlayerCharacter> binder, Priority priority, Prioritizable prioritizable) {
             super();
             setDefaultVerticalComponentAlignment(Alignment.CENTER);
 
@@ -375,13 +376,22 @@ public class MetaTypeContent extends VerticalLayout {
             checkboxesByPrioritizable.putIfAbsent(prioritizable, new ArrayList<>());
             checkboxesByPrioritizable.get(prioritizable).add(checkbox);
 
+            binder.addValueChangeListener(event -> checkbox.setValue(binder.getBean().getPriority(prioritizable) == priority));
+            binder.bind(checkbox, player -> player.getPriority(prioritizable) == priority, (player, selected) -> {
+                if (selected) {
+                    player.setPriority(prioritizable, priority);
+                }
+                updatePriorityDependantComponents(binder);
+            });
+
+            /*
             checkbox.addValueChangeListener(event -> {
                 if (checkboxesByPrioritizable.get(prioritizable) != null && checkboxesByPrioritizable.get(prioritizable).stream().noneMatch(AbstractField::getValue)) {
-                    playerCharacter.setPriority(prioritizable, null);
+                    binder.getBean().setPriority(prioritizable, null);
                 }
 
                 if (event.getValue()) {
-                    playerCharacter.setPriority(prioritizable, priority);
+                    binder.getBean().setPriority(prioritizable, priority);
                     checkboxByPriority.get(priority).forEach(priorityCheckbox -> {
                         if (priorityCheckbox != checkbox) {
                             priorityCheckbox.setValue(false);
@@ -394,8 +404,8 @@ public class MetaTypeContent extends VerticalLayout {
                         }
                     });
                 }
-                updatePriorityDependantComponents(playerCharacter);
             });
+             */
 
             add(checkbox);
             Html label = new Html("<span>" + labelText + "</span>");

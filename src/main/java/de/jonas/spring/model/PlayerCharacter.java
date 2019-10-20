@@ -1,8 +1,6 @@
 package de.jonas.spring.model;
 
-import de.jonas.spring.model.skills.Skill;
-import de.jonas.spring.model.skills.MagicalOrResonanceSkill;
-import de.jonas.spring.model.skills.MagicalSkillGroup;
+import de.jonas.spring.model.skills.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +13,10 @@ public class PlayerCharacter {
     private Map<Prioritizable, Priority> priorities = new EnumMap<>(Prioritizable.class);
     private Map<Skill, Integer> learnedSkills = new HashMap<>();
     private List<Castable> castables = new ArrayList<>();
+    /**
+     * Attributes bought at character creation
+     */
+    private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     public List<Castable> getCastables() {
         return castables.stream().filter(castable -> castable.canPlayerLearn(this)).collect(Collectors.toList());
@@ -31,13 +33,20 @@ public class PlayerCharacter {
         return (List) learnedSkills.keySet().stream().filter(skill -> skill instanceof MagicalOrResonanceSkill && ((MagicalOrResonanceSkill) skill).canPlayerLearn(this)).collect(Collectors.toList());
     }
 
-    /**
-     * Attributes bought at character creation
-     */
-    private Attributes boughtAttributes = new Attributes(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public List<PhysicalSkill> getPhysicalSkills() {
+        return (List) learnedSkills.keySet().stream().filter(skill -> skill instanceof PhysicalSkill).collect(Collectors.toList());
+    }
+
+    public List<KnowledgeSkill> getKnowledgeSkills() {
+        return (List) learnedSkills.keySet().stream().filter(skill -> skill instanceof KnowledgeSkill).collect(Collectors.toList());
+    }
 
     public MagicalSkillGroup getMagicalSkillGroup() {
         return (MagicalSkillGroup) learnedSkills.keySet().stream().filter(skill -> skill instanceof MagicalSkillGroup).findAny().orElse(null);
+    }
+
+    public List<PhysicalSkillGroup> getPhysicalSkillGroups() {
+        return (List) learnedSkills.keySet().stream().filter(skill -> skill instanceof PhysicalSkillGroup).collect(Collectors.toList());
     }
 
     public void forgetSkill(Skill skill) {
@@ -72,6 +81,8 @@ public class PlayerCharacter {
     }
 
     public void setPriority(Prioritizable prioritizable, Priority priority) {
+        //noinspection StatementWithEmptyBody
+        while (priorities.values().remove(priority));
         priorities.put(prioritizable, priority);
     }
 
@@ -93,5 +104,9 @@ public class PlayerCharacter {
 
     public void setRunnerLevel(RunnerLevel runnerLevel) {
         this.runnerLevel = runnerLevel;
+    }
+
+    public Integer getSkillLevel(Skill skill) {
+        return learnedSkills.get(skill);
     }
 }

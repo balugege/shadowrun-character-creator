@@ -11,6 +11,7 @@ import de.jonas.spring.model.PlayerCharacter;
 import de.jonas.spring.tabcontent.ConceptContent;
 import de.jonas.spring.tabcontent.MagicOrResonanceContent;
 import de.jonas.spring.tabcontent.MetaTypeContent;
+import de.jonas.spring.tabcontent.SkillContent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +36,12 @@ public class MainView extends VerticalLayout {
         tabContents.put(conceptTab, new ConceptContent(playerBinder));
         Tab metatypeTab = new Tab("Metatyp");
         tabContents.put(metatypeTab, new MetaTypeContent(playerBinder));
-        Tab magicOrResonance = new Tab("Magie oder Resonanz");
-        tabContents.put(magicOrResonance, new MagicOrResonanceContent(playerBinder));
+        Tab magicOrResonanceTab = new Tab("Magie oder Resonanz");
+        tabContents.put(magicOrResonanceTab, new MagicOrResonanceContent(playerBinder));
+        Tab skillTab = new Tab("Fertigkeiten");
+        tabContents.put(skillTab, new SkillContent(playerBinder));
 
-        tabs.add(conceptTab, metatypeTab, magicOrResonance);
+        tabs.add(conceptTab, metatypeTab, magicOrResonanceTab, skillTab);
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
 
         tabs.addSelectedChangeListener(event -> {
