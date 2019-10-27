@@ -1,12 +1,8 @@
 package de.jonas.spring.tabcontent;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.CallbackDataProvider;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -23,16 +19,13 @@ import de.jonas.spring.model.skills.Skill;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SkillContent extends VerticalLayout {
-    private ListSelection<PhysicalSkill> physicalSkillSelection;
-    private Grid<KnowledgeSkill> knowledgeSkillGrid;
-    private TextField knowledgeSkillTextField;
-    private Label noAbilitiesHint = new Label("Dein Charakter hat seine Fertigkeitspunkte noch nicht prioritisiert.");
+public class AdvantagesContent extends VerticalLayout {
+    private ListSelection<PhysicalSkill> advantagesSelection;
+    private ListSelection<PhysicalSkill> disAdvantagesSelection;
 
-    public SkillContent(Binder<PlayerCharacter> binder) {
+    public AdvantagesContent(Binder<PlayerCharacter> binder) {
         setPadding(false);
 
         build(binder);
@@ -41,101 +34,83 @@ public class SkillContent extends VerticalLayout {
     }
 
     private void updateVisibility(Binder<PlayerCharacter> binder) {
-        boolean canLearnMorePhysicalSkills = canLearnMorePhysicalSkills(binder);
-        physicalSkillSelection.setEnabled(canLearnMorePhysicalSkills);
-        physicalSkillSelection.setItems(EnumSet.allOf(PhysicalSkill.class));
-        physicalSkillSelection.setSelectedItems(binder.getBean().getPhysicalSkills());
+        boolean canLearnMorePhysicalSkills = canLearnMoreAdvantagesSkills(binder);
+        advantagesSelection.setEnabled(canLearnMorePhysicalSkills);
+        advantagesSelection.setItems(EnumSet.allOf(PhysicalSkill.class));
+        advantagesSelection.setSelectedItems(binder.getBean().getPhysicalSkills());
 
-        boolean canLearnMoreKnowledgeSkills = canLearnMoreKnowledgeSkills(binder);
-        knowledgeSkillGrid.setItems(binder.getBean().getKnowledgeSkills());
-        knowledgeSkillTextField.setEnabled(canLearnMoreKnowledgeSkills);
-
-        noAbilitiesHint.setVisible(!canLearnMoreKnowledgeSkills || !canLearnMorePhysicalSkills);
+        disAdvantagesSelection.setVisible(true);
     }
 
     private void build(Binder<PlayerCharacter> binder) {
-        add(noAbilitiesHint);
-        addPhysicalSkillSelector(binder);
-        addKnowledgeSkillSelector(binder);
+        addAdvantagesSelector(binder);
+        addDisadvantagesSelector(binder);
     }
 
-    private void addPhysicalSkillSelector(Binder<PlayerCharacter> binder) {
-        physicalSkillSelection = new ListSelection<>("Fähigkeit");
-        physicalSkillSelection.setLabel("Aktionsfertigkeiten (S. 130 GRW)");
+    private void addAdvantagesSelector(Binder<PlayerCharacter> binder) {
+        advantagesSelection = new ListSelection<>("Vorteil");
+        advantagesSelection.setLabel("Vorteile (S. 83 GRW)");
 
-        physicalSkillSelection.addComponentColumn(skill -> new SkillLevelComboBox(skill, binder)).setHeader("Stufe");
+        advantagesSelection.addComponentColumn(skill -> new SkillLevelComboBox(skill, binder)).setHeader("Stufe");
 
-        physicalSkillSelection.addComponentColumn(skill -> {
+        advantagesSelection.addComponentColumn(skill -> {
             Button removeButton = new Button("Entfernen");
             removeButton.addClickListener(event -> {
                 binder.getBean().forgetSkill(skill);
                 List<PhysicalSkill> physicalSkills = binder.getBean().getPhysicalSkills();
-                physicalSkillSelection.setSelectedItems(physicalSkills);
-                physicalSkillSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !physicalSkills.contains(element)));
-                physicalSkillSelection.setEnabled(canLearnMorePhysicalSkills(binder));
+                advantagesSelection.setSelectedItems(physicalSkills);
+                advantagesSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !physicalSkills.contains(element)));
+                advantagesSelection.setEnabled(canLearnMoreAdvantagesSkills(binder));
             });
             return removeButton;
         }).setHeader("");
 
-        physicalSkillSelection.onSelect(event -> {
+        advantagesSelection.onSelect(event -> {
             if (event.getValue() != null) {
                 binder.getBean().learnSkill(event.getValue(), 1);
                 List<PhysicalSkill> learnedSkills = binder.getBean().getPhysicalSkills();
-                physicalSkillSelection.setSelectedItems(learnedSkills);
-                physicalSkillSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !learnedSkills.contains(element)));
-                physicalSkillSelection.setEnabled(canLearnMorePhysicalSkills(binder));
+                advantagesSelection.setSelectedItems(learnedSkills);
+                advantagesSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !learnedSkills.contains(element)));
+                advantagesSelection.setEnabled(canLearnMoreAdvantagesSkills(binder));
             }
         });
 
-        add(physicalSkillSelection);
+        add(advantagesSelection);
     }
 
-    private void addKnowledgeSkillSelector(Binder<PlayerCharacter> binder) {
-        knowledgeSkillGrid = new Grid<>();
-        knowledgeSkillTextField = new TextField();
-        knowledgeSkillTextField.setWidth("40%");
-        knowledgeSkillTextField.setLabel("Wissensfertigkeiten (S. 148 GRW)");
+    private void addDisadvantagesSelector(Binder<PlayerCharacter> binder) {
+        disAdvantagesSelection = new ListSelection<>("Vorteil");
+        disAdvantagesSelection.setLabel("Vorteile (S. 83 GRW)");
 
-        knowledgeSkillGrid.setSelectionMode(Grid.SelectionMode.NONE);
-        knowledgeSkillGrid.addColumn(Skill::toString).setHeader("Wissensfertigkeit");
-        knowledgeSkillGrid.addComponentColumn(skill -> new SkillLevelComboBox(skill, binder)).setHeader("Stufe");
-        knowledgeSkillGrid.addComponentColumn(skill -> {
+        disAdvantagesSelection.addComponentColumn(skill -> new SkillLevelComboBox(skill, binder)).setHeader("Stufe");
+
+        disAdvantagesSelection.addComponentColumn(skill -> {
             Button removeButton = new Button("Entfernen");
             removeButton.addClickListener(event -> {
                 binder.getBean().forgetSkill(skill);
-                List<KnowledgeSkill> knowledgeSkills = binder.getBean().getKnowledgeSkills();
-                knowledgeSkillGrid.setItems(knowledgeSkills);
-                knowledgeSkillTextField.setEnabled(canLearnMoreKnowledgeSkills(binder));
+                List<PhysicalSkill> physicalSkills = binder.getBean().getPhysicalSkills();
+                advantagesSelection.setSelectedItems(physicalSkills);
+                advantagesSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !physicalSkills.contains(element)));
+                advantagesSelection.setEnabled(canLearnMoreAdvantagesSkills(binder));
             });
             return removeButton;
-        });
+        }).setHeader("");
 
-        knowledgeSkillTextField.addKeyPressListener(Key.ENTER, event -> {
-            if (knowledgeSkillTextField.getValue() != null) {
-                binder.getBean().learnSkill(new KnowledgeSkill(knowledgeSkillTextField.getValue()), 1);
-                List<KnowledgeSkill> learnedKnowledgeSkills = binder.getBean().getKnowledgeSkills();
-                knowledgeSkillGrid.setItems(learnedKnowledgeSkills);
-                knowledgeSkillTextField.setEnabled(canLearnMoreKnowledgeSkills(binder));
-                knowledgeSkillTextField.setValue("");
+        disAdvantagesSelection.onSelect(event -> {
+            if (event.getValue() != null) {
+                if (canLearnMoreAdvantagesSkills(binder)) {
+                    binder.getBean().learnSkill(event.getValue(), 1);
+                    List<PhysicalSkill> learnedSkills = binder.getBean().getPhysicalSkills();
+                    disAdvantagesSelection.setSelectedItems(learnedSkills);
+                    disAdvantagesSelection.setItems(EnumSet.allOf(PhysicalSkill.class).stream().filter(element -> !learnedSkills.contains(element)));
+                }
             }
         });
 
-        add(knowledgeSkillTextField);
-        add(knowledgeSkillGrid);
+        add(disAdvantagesSelection);
     }
 
-    private boolean canLearnMoreKnowledgeSkills(Binder<PlayerCharacter> binder) {
-        PlayerCharacter player = binder.getBean();
-        if (player.getTotalAttributes() == null) {
-            return false;
-        }
-        // page 75
-        int availablePoints = 2 * (player.getTotalAttributes().getIntuition() + player.getTotalAttributes().getLogic());
-        int spentPoints = player.getKnowledgeSkills().stream().mapToInt(player::getSkillLevel).sum();
-        return spentPoints < availablePoints;
-    }
-
-    private boolean canLearnMorePhysicalSkills(Binder<PlayerCharacter> binder) {
+    private boolean canLearnMoreAdvantagesSkills(Binder<PlayerCharacter> binder) {
         Priority priority = binder.getBean().getPriority(Prioritizable.ABILITY_POINTS);
         PlayerCharacter player = binder.getBean();
         if (priority == null || player.getTotalAttributes() == null) {
