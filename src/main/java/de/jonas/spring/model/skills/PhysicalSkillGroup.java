@@ -5,7 +5,7 @@ import java.util.List;
 import static de.jonas.spring.model.skills.PhysicalSkill.*;
 import static java.util.Arrays.asList;
 
-public enum PhysicalSkillGroup implements Skill {
+public enum PhysicalSkillGroup implements SkillGroup {
     ATHLETICS("Athletik", asList(ACROBATICS, RUNNING, SWIMMING)),
     BIOTECH("Biotech", asList(BIOTECHNOLOGY, FIRST_AID, KYBERNETICS, MEDICINE));
 
@@ -17,6 +17,6 @@ public enum PhysicalSkillGroup implements Skill {
 
     @Override
     public String toString() {
-        return label;
+        return label + " (Gruppe)";
     }
 }

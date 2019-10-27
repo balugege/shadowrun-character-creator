@@ -1,6 +1,7 @@
 package de.jonas.spring;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -40,8 +41,12 @@ public class MainView extends VerticalLayout {
         tabContents.put(magicOrResonanceTab, new MagicOrResonanceContent(playerBinder));
         Tab skillTab = new Tab("Fertigkeiten");
         tabContents.put(skillTab, new SkillContent(playerBinder));
+        Tab advantagesTab = new Tab("Vor- und Nachteile");
+        tabContents.put(advantagesTab, new Label("Muss noch programmiert werden"));
+        Tab resourceTab = new Tab("Resourcen");
+        tabContents.put(resourceTab, new Label("Muss noch programmiert werden"));
 
-        tabs.add(conceptTab, metatypeTab, magicOrResonanceTab, skillTab);
+        tabs.add(conceptTab, metatypeTab, magicOrResonanceTab, skillTab, advantagesTab, resourceTab);
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
 
         tabs.addSelectedChangeListener(event -> {

@@ -82,8 +82,8 @@ public class MetaTypeContent extends VerticalLayout {
         attributesForm.addFormItem(logicComboBox, "Logik");
         attributeComboBoxes.add(logicComboBox);
 
-        AttributeComboBox intelligenceComboBox = new AttributeComboBox(Attributes::getIntelligence, Attributes::setIntelligence, binder);
-        attributesForm.addFormItem(intelligenceComboBox, "Intelligenz");
+        AttributeComboBox intelligenceComboBox = new AttributeComboBox(Attributes::getIntuition, Attributes::setIntuition, binder);
+        attributesForm.addFormItem(intelligenceComboBox, "Intuition");
         attributeComboBoxes.add(intelligenceComboBox);
 
         AttributeComboBox charismaComboBox = new AttributeComboBox(Attributes::getCharisma, Attributes::setCharisma, binder);
@@ -155,7 +155,7 @@ public class MetaTypeContent extends VerticalLayout {
                     query.getOffset();
                     return 0;
                 }
-                return Math.max(0, (int) getSelectableAttributes(attributeGetter, query).count());
+                return (int) getSelectableAttributes(attributeGetter, query).count();
             });
             setDataProvider(dataProvider);
             playerBinder.addValueChangeListener(event -> {
@@ -220,7 +220,7 @@ public class MetaTypeContent extends VerticalLayout {
             PlayerCharacter player = playerBinder.getBean();
             int attributeStart = attributeGetter.apply(player.getMetatype().getStartingAttributes());
             int attributeMaximum = attributeGetter.apply(player.getMetatype().getAttributeLimits());
-            Attributes totalAttributes = player.getMetatype().getStartingAttributes().getSumWith(player.getBoughtAttributes());
+            Attributes totalAttributes = player.getTotalAttributes();
             if (totalAttributes.anyNonSpecialAttributeAtOrAbove(player.getMetatype().getAttributeLimits()) && attributeGetter.apply(totalAttributes) < attributeGetter.apply(player.getMetatype().getAttributeLimits())) {
                 attributeMaximum -= 1;
             }

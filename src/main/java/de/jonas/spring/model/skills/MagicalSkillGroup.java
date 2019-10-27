@@ -1,6 +1,6 @@
 package de.jonas.spring.model.skills;
 
-public enum MagicalSkillGroup implements Skill {
+public enum MagicalSkillGroup implements SkillGroup {
     WITCHCRAFT("Hexerei"),
     SUMMONING("Beschwören"),
     SORCERY("Verzaubern");

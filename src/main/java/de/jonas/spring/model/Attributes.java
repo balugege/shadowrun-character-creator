@@ -7,20 +7,20 @@ public class Attributes {
     private int strength;
     private int willpower;
     private int logic;
-    private int intelligence;
+    private int intuition;
     private int charisma;
     private int edge;
     private int essence;
     private int magicOrResonance;
 
-    Attributes(int constitution, int agility, int reactivity, int strength, int willpower, int logic, int intelligence, int charisma, int edge, int essence, int magicOrResonance) {
+    Attributes(int constitution, int agility, int reactivity, int strength, int willpower, int logic, int intuition, int charisma, int edge, int essence, int magicOrResonance) {
         this.constitution = constitution;
         this.agility = agility;
         this.reactivity = reactivity;
         this.strength = strength;
         this.willpower = willpower;
         this.logic = logic;
-        this.intelligence = intelligence;
+        this.intuition = intuition;
         this.charisma = charisma;
         this.edge = edge;
         this.essence = essence;
@@ -71,12 +71,12 @@ public class Attributes {
         this.logic = logic;
     }
 
-    public int getIntelligence() {
-        return intelligence;
+    public int getIntuition() {
+        return intuition;
     }
 
-    public void setIntelligence(int intelligence) {
-        this.intelligence = intelligence;
+    public void setIntuition(int intuition) {
+        this.intuition = intuition;
     }
 
     public int getCharisma() {
@@ -114,7 +114,7 @@ public class Attributes {
                 this.strength +
                 this.willpower +
                 this.logic +
-                this.intelligence +
+                this.intuition +
                 this.charisma;
     }
 
@@ -130,7 +130,7 @@ public class Attributes {
                 (this.strength >= attributeLimits.constitution) ||
                 (this.willpower >= attributeLimits.constitution) ||
                 (this.logic >= attributeLimits.constitution) ||
-                (this.intelligence >= attributeLimits.constitution) ||
+                (this.intuition >= attributeLimits.constitution) ||
                 (this.charisma >= attributeLimits.constitution);
     }
 
@@ -142,7 +142,7 @@ public class Attributes {
                 this.strength + addend.strength,
                 this.willpower + addend.willpower,
                 this.logic + addend.logic,
-                this.intelligence + addend.intelligence,
+                this.intuition + addend.intuition,
                 this.charisma + addend.charisma,
                 this.edge + addend.edge,
                 this.essence + addend.essence,

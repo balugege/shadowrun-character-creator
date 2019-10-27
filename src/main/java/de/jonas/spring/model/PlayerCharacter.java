@@ -26,6 +26,12 @@ public class PlayerCharacter {
         return castables;
     }
 
+    public Attributes getTotalAttributes() {
+        if(getMetatype() == null || getBoughtAttributes() == null) {
+            return null;
+        }
+        return getMetatype().getStartingAttributes().getSumWith(getBoughtAttributes());
+    }
     /**
      * @return Only skills that the player can cast.
      */
